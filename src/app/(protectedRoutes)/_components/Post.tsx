@@ -2,14 +2,34 @@ import Link from "next/link";
 import styles from "./post.module.css";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
-import 'dayjs/locale/ko';
+import "dayjs/locale/ko";
 import ActionButtons from "./ActionButtons";
+import PostArticle from "./PostArticle";
+import { faker } from "@faker-js/faker";
 
 dayjs.extend(relativeTime);
-dayjs.locale('ko');
+dayjs.locale("ko");
 
-export default function Post() {
-  const target = {
+type PostImage = {
+  imageId: number;
+  url: string;
+}
+
+export type Post = {
+    postId: number;
+    content: string;
+    User: {
+      id: string;
+      nickname: string;
+      image: string;
+    };
+    createdAt: Date;
+    Images: (PostImage | null)[];
+}
+
+export default function Post({ noImage }: { noImage?: boolean }) {
+  const target: Post = {
+    postId: 1,
     User: {
       id: "hopago",
       nickname: "호파고",
@@ -20,8 +40,15 @@ export default function Post() {
     Images: [],
   };
 
+  if (Math.random() > 0.5 && !noImage) {
+    target.Images.push({
+      imageId: target.Images.length + 1,
+      url: faker.image.urlLoremFlickr(),
+    });
+  }
+
   return (
-    <article className={styles.post}>
+    <PostArticle post={target}>
       <div className={styles.postWrapper}>
         <div className={styles.postUserSection}>
           <Link href={`/${target.User.id}`} className={styles.postUserImage}>
@@ -44,10 +71,19 @@ export default function Post() {
             </span>
           </div>
           <div>{target.content}</div>
-          <div className={styles.postImageSection}></div>
+          <div className={styles.postImageSection}>
+            {target.Images && target.Images.length > 0 ? (
+              <Link
+                href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[0]?.imageId}`}
+                className={styles.postImageSection}
+              >
+                <img src={target.Images[0]?.url} alt="Post Image" />
+              </Link>
+            ) : null}
+          </div>
           <ActionButtons />
         </div>
       </div>
-    </article>
+    </PostArticle>
   );
 }
