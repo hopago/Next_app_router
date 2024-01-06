@@ -12,7 +12,9 @@ export default function NavMenu() {
 
   return (
     <>
-      <li>
+      <li className={styles.navListItem}
+
+      >
         <Link href="/home">
           <div className={styles.navPill}>
             {segment === "home" ? (
@@ -47,7 +49,7 @@ export default function NavMenu() {
           </div>
         </Link>
       </li>
-      <li>
+      <li className={styles.navListItem}>
         <Link href="/explore">
           <div className={styles.navPill}>
             {segment && ["search", "explore"].includes(segment) ? (
@@ -82,7 +84,7 @@ export default function NavMenu() {
           </div>
         </Link>
       </li>
-      <li>
+      <li className={styles.navListItem}>
         <Link href="/messages">
           <div className={styles.navPill}>
             {segment === "messages" ? (
@@ -118,7 +120,7 @@ export default function NavMenu() {
         </Link>
       </li>
       {me?.id && (
-        <li>
+        <li className={styles.navListItem}>
           <Link href={`/${me?.id}`}>
             <div className={styles.navPill}>
               {segment === me.id ? (

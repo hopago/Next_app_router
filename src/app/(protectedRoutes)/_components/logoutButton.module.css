@@ -1,19 +1,42 @@
 .logoutButton {
-    width: 100%;
+    width: 66px;
     height: 66px;
-    padding: 12px;
+    padding: 6px;
     display: flex;
     margin: 12px 0;
     cursor: pointer;
     border: none;
     align-items: center;
+    justify-content: center;
     background-color: #fff;
     text-align: left;
+}
+
+.logoutUserName {
+    display: none;
+}
+
+.logoutUserName > div:first-child {
+    font-weight: bold;
+}
+
+@media all and (min-width: 1300px) {
+    .logoutButton {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .logoutUserName {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin: 0 12px;
+    }
 }
 
 .logoutUserImage {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .logoutUserImage img {
@@ -24,12 +47,4 @@
 .logoutButton:hover {
     background-color: rgba(15, 20, 25, 0.1);
     border-radius: 33px;
-}
-
-.logoutUserName {
-    margin: 0 12px;
-}
-
-.logoutUserName > div:first-child {
-    font-weight: bold;
 }
