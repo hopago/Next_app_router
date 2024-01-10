@@ -1,5 +1,6 @@
 "use client";
 
+import BackButton from "./BackButton";
 import styles from "./login.module.css";
 import { useState } from "react";
 
@@ -7,8 +8,6 @@ export default function LoginModal() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-
-  const onClose = () => {};
 
   const onSubmit = () => {};
 
@@ -20,9 +19,7 @@ export default function LoginModal() {
     <div className={styles.modalBackground}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
-          <button className={styles.closeButton} onClick={onClose}>
-            X
-          </button>
+          <BackButton />
           <div>로그인 하세요.</div>
         </div>
         <form onSubmit={onSubmit}>

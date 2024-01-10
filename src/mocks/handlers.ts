@@ -1,4 +1,4 @@
-import { SignUpProps } from "@/server-actions/auth/signup";
+import { SignUpProps } from "@/app/(publicRoutes)/_lib/sign-up";
 import { HttpResponse, http } from "msw";
 
 const mockUsers = (() => {
@@ -42,8 +42,7 @@ export const handlers = [
     });
   }),
   http.post("/api/signup", async ({ request }) => {
-    const userInfo = await request.json() as unknown as SignUpProps;
-    console.log(userInfo);
+    const userInfo = (await request.json()) as unknown as SignUpProps;
 
     const isDuplicated = mockUsers.some(user => user.id === userInfo?.id);
     if (isDuplicated) {
@@ -51,6 +50,8 @@ export const handlers = [
         status: 407
       })
     }
+
+    mockUsers.push(userInfo);
 
     return new HttpResponse(null, {
       status: 200
