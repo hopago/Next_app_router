@@ -5,9 +5,9 @@ import BackButton from "./BackButton";
 import { signUp } from "../_lib/sign-up";
 import { useFormState, useFormStatus } from "react-dom";
 
-function handleMessage(message: string | undefined) {
+function handleMessage(message: string | undefined, field: string) {
   if (!message) return;
-  if (message === "All fields required...") {
+  if (message === `Field ${field} is required.`) {
     return "모든 영역을 입력하세요.";
   }
   if (message === "User already existed...") {
@@ -94,7 +94,10 @@ export default function SignUpModal() {
                 가입하기
               </button>
               <div className={styles.error}>
-                {handleMessage(state?.message)}
+                {handleMessage(
+                  state?.message.split("|")[0],
+                  state?.message.split("|")[1]
+                )}
               </div>
             </div>
           </form>

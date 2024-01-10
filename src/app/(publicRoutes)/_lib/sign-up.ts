@@ -13,15 +13,34 @@ export type SignUpProps = {
 export async function signUp(prevState: any, formData: FormData) {
   let shouldRedirect = false;
 
-  const id = formData.get("id") as string;
-  const name = formData.get("name") as string;
-  const password = formData.get("password") as string;
-  const image = formData.get("image") as string;
+  let id;
+  let name;
+  let password;
+  let image;
 
-  if (!id || !name || !password || !image)
+  const checkAndTrim = (field: string) => {
+    const value = formData.get(field);
+    if (typeof value === "string") {
+      const trimmedValue = value.trim();
+      if (!trimmedValue) {
+        throw new Error(`Field ${field} is required.|${field}`);
+      }
+      return trimmedValue;
+    } else {
+      throw new Error(`Field ${field} should be a string.|${field}`);
+    }
+  };
+
+  try {
+    id = checkAndTrim("id");
+    name = checkAndTrim("name");
+    password = checkAndTrim("password");
+    image = checkAndTrim("image");
+  } catch (err: any) {
     return {
-      message: "All fields required...",
-    };
+      message: err.message,
+    }
+  }
 
   const signUpInfo = {
     id,
