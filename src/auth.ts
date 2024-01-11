@@ -31,8 +31,11 @@ export const {
           return null;
         }
 
-        const user = await authResponse?.json();
-        console.log("user", user);
+        if (authResponse.status === 401) {
+          throw new Error("Wrong credentials...");
+        }
+
+        const user = await authResponse.json();
         return {
           email: user.id,
           name: user.nickname,

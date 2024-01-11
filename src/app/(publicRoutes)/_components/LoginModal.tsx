@@ -24,6 +24,7 @@ export default function LoginModal() {
       });
       
       setMessage("");
+      setId("");
       setPassword("");
 
       router.replace("/home");

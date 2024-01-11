@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 export type SignUpProps = {
   id: string;
-  name: string;
+  nickname: string;
   password: string;
   image: string;
 };
@@ -44,7 +44,7 @@ export async function signUp(prevState: any, formData: FormData) {
 
   const signUpInfo = {
     id,
-    name,
+    nickname: name,
     password,
     image,
   };
