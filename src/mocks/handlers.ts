@@ -1,4 +1,5 @@
 import { SignUpProps } from "@/app/(publicRoutes)/_lib/sign-up";
+import { faker } from "@faker-js/faker";
 import { HttpResponse, http } from "msw";
 
 type SignUpPropsWithoutId = Omit<SignUpProps, "id">;
@@ -13,13 +14,46 @@ const mockUsers = (() => {
       id: "1",
       nickname: "hopago",
       password: "hopago",
-      image: "/free-icon-letter-h-7297840",
+      image: "/free-icon-letter-h-7297840.png",
     },
     {
       id: "2",
       nickname: "dopago",
       password: "dopago",
-      image: "/free-icon-letter-h-7297840",
+      image: "/free-icon-letter-h-7297840.png",
+    },
+  ];
+})();
+
+const mockPosts = (() => {
+  return [
+    {
+      postId: 1,
+      User: {
+        ...mockUsers[0],
+      },
+      content: `${mockUsers[0].nickname} is ${mockUsers[0].nickname}!!!`,
+      Images: [
+        {
+          imageId: 1,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: new Date(),
+    },
+    {
+      postId: 2,
+      User: {
+        ...mockUsers[1],
+      },
+      content: `${mockUsers[1].nickname} is ${mockUsers[1].nickname}!!!`,
+      Images: [
+        {
+          imageId: 2,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: new Date(),
     },
   ];
 })();
@@ -81,4 +115,8 @@ export const handlers = [
       status: 200,
     });
   }),
+  http.post("/api/post", async ({ request }) => {
+    // TODO: 파람값 가져오기
+    return HttpResponse.json(mockPosts);
+  })
 ];

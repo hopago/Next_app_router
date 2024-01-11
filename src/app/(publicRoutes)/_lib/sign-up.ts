@@ -1,5 +1,6 @@
 "use server";
 
+import { signIn } from "@/auth";
 import { restFetcher } from "@/hooks/fetcher";
 import { redirect } from "next/navigation";
 
@@ -75,6 +76,17 @@ export async function signUp(prevState: any, formData: FormData) {
       shouldRedirect = true;
     }
   } catch (err: any) {
+    console.error(err);
+  }
+
+  try {
+    await signIn("credentials", {
+      username: name,
+      password,
+      redirect: false,
+    });
+  } catch (err: any) {
+    shouldRedirect = false;
     console.error(err);
   }
 

@@ -5,11 +5,13 @@ export const restFetcher = async ({
   path,
   body,
   params,
+  next,
 }: {
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   path: string;
   body?: any;
   params?: any;
+  next?: Record<string, any>;
 }) => {
   try {
     let url = `${BASE_URL}${path}`;
@@ -24,11 +26,15 @@ export const restFetcher = async ({
 
     if (params) {
       const searchParams = new URLSearchParams(params);
-      url += '?' + searchParams.toString();
+      url += "?" + searchParams.toString();
     }
 
     if (body) {
       fetchOptions.body = JSON.stringify(body);
+    }
+
+    if (next) {
+      fetchOptions.next = { ...next };
     }
 
     const res = await fetch(url, fetchOptions);
