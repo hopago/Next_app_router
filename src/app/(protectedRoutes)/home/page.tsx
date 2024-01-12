@@ -7,7 +7,7 @@ import PostForm from "../_components/PostForm";
 import Tab from "./_components/Tab";
 import TabContextProvider from "./context/TabContextProvider";
 import styles from "./page.module.css";
-import getPostsByRecommend from "./services/getPostsByRecommend";
+import getPostsByRecommend from "./_services/getPostsByRecommend";
 import TabDecider from "./_components/TabDecider";
 
 export default async function Home() {

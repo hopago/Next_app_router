@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import getPostsByRecommend from "../services/getPostsByRecommend";
+import getPostsByRecommend from "../_services/getPostsByRecommend";
 import Post from '../../_components/Post';
 import { Post as TPost } from "@/model/Post";
 

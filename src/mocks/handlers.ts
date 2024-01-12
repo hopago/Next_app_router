@@ -149,35 +149,40 @@ export const handlers = [
     });
   }),
   http.get("/api/post", async ({ request }) => {
-    const { url } = request;
-    let fetchType = url.split("/")[4].split("=")[1];
-    const userId = url.split("/")[4].split("=")[2];
+    const url = new URL(request.url);
+
+    const fetchType = url.searchParams.get("fetchType");
+    const userId = url.searchParams.get("userId");
+    const searchTerm = url.searchParams.get("search");
 
     if (fetchType === "recommends") {
       return HttpResponse.json(mockPosts);
     }
 
-    if (fetchType !== "recommends") {
-      fetchType = fetchType.split("&")[0]
-    }
-
-    if (fetchType === "following") {
-      const found = mockUsers.find((user) => user.id === userId);
-      const followingUsers = found?.followingUsers;
-      if (!followingUsers || !followingUsers.length) {
+    if (fetchType === "following" && userId) {
+      const foundUser = mockUsers.find((user) => user.id === userId);
+      if (!foundUser?.followingUsers?.length) {
         return new HttpResponse("Post not found...", {
           status: 404,
         });
       }
 
-      const followingUsersPosts = followingUsers.map((user) => {
-        const filteredPosts = mockPosts.filter(
-          (post) => post.User.id === user.userId
-        );
-        return filteredPosts;
+      const followingUsersPosts = foundUser.followingUsers.flatMap((user) => {
+        return mockPosts.filter((post) => post.User.id === user.userId);
       });
 
       return HttpResponse.json(followingUsersPosts);
+    }
+
+    if (searchTerm) {
+      const filteredPosts = mockPosts.filter((post) => {
+        return post.content
+          .trim()
+          .toLowerCase()
+          .includes(searchTerm.trim().toLowerCase());
+      });
+
+      return HttpResponse.json(filteredPosts);
     }
   }),
 ];

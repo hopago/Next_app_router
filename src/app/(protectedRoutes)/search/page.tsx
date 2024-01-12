@@ -1,9 +1,8 @@
-import Post from "../_components/Post";
 import SearchForm from "../_components/SearchForm";
-import Trend from "../_components/Trend";
 import styles from "./page.module.css";
 import BackButton from "../_components/BackButton";
 import Tab from "./_components/Tab";
+import SearchResult from "./_components/SearchResult";
 
 type Props = {
   searchParams: {
@@ -15,7 +14,7 @@ type Props = {
 
 export default function page({ searchParams }: Props) {
   return (
-     <main className={styles.main}>
+    <main className={styles.main}>
       <div className={styles.searchTop}>
         <div className={styles.searchZone}>
           <div className={styles.buttonZone}>
@@ -28,10 +27,7 @@ export default function page({ searchParams }: Props) {
         <Tab />
       </div>
       <div className={styles.list}>
-        <Post />
-        <Post />
-        <Post />
-        {/*<SearchResult searchParams={searchParams} />*/}
+        <SearchResult searchParams={searchParams} />
       </div>
     </main>
   );
