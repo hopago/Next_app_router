@@ -3,32 +3,12 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
-import Post from "../_components/Post";
 import PostForm from "../_components/PostForm";
 import Tab from "./_components/Tab";
 import TabContextProvider from "./context/TabContextProvider";
 import styles from "./page.module.css";
-import { restFetcher } from "@/hooks/fetcher";
-import { revalidatePath } from "next/cache";
-
-async function getPostsByRecommend() {
-  const res = await restFetcher({
-    path: "api/post",
-    method: "GET",
-    next: {
-      tags: ["posts", "recommends"],
-    },
-    params: "recommends",
-  });
-
-  if (!res?.ok) {
-    throw new Error("Failed to fetch posts...");
-  }
-
-  revalidatePath("/home");
-
-  return res.json();
-}
+import getPostsByRecommend from "./services/getPostsByRecommend";
+import TabDecider from "./_components/TabDecider";
 
 export default async function Home() {
   const queryClient = new QueryClient();
@@ -44,9 +24,7 @@ export default async function Home() {
         <TabContextProvider>
           <Tab />
           <PostForm />
-          <Post />
-          <Post />
-          <Post />
+          <TabDecider />
         </TabContextProvider>
       </HydrationBoundary>
     </div>

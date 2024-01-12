@@ -1,43 +1,43 @@
 import Link from "next/link";
-import { Post } from "./Post";
 import styles from "./post.module.css";
 import cx from "classnames";
+import { Post } from "@/model/Post";
 
-export default function PostImages({ target }: { target: Post }) {
-  if (!target.Images) return null;
-  if (!target.Images.length) return null;
+export default function PostImages({ post }: { post: Post }) {
+  if (!post.Images) return null;
+  if (!post.Images.length) return null;
 
-  if (target.Images.length === 1) {
+  if (post.Images.length === 1) {
     return (
       <Link
-        href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[0]?.imageId}`}
+        href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0]?.imageId}`}
         className={cx(styles.postImageSection, styles.oneImage)}
         style={{
-          backgroundImage: `url(${target.Images[0]?.url})`,
+          backgroundImage: `url(${post.Images[0]?.link})`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
         }}
       >
-        <img src={target.Images[0]?.url} alt="Post Image" />
+        <img src={post.Images[0]?.link} alt="Post Image" />
       </Link>
     );
   }
 
-  if (target.Images.length === 2) {
+  if (post.Images.length === 2) {
     return (
       <div className={cx(styles.postImageSection, styles.twoImage)}>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[0]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[0]?.url})`,
+            backgroundImage: `url(${post.Images[0]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         ></Link>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[1]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[1]?.url})`,
+            backgroundImage: `url(${post.Images[1]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
@@ -46,29 +46,29 @@ export default function PostImages({ target }: { target: Post }) {
     );
   }
 
-  if (target.Images.length === 3) {
+  if (post.Images.length === 3) {
     return (
       <div className={cx(styles.postImageSection, styles.threeImage)}>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[0]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[0]?.url})`,
+            backgroundImage: `url(${post.Images[0]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         ></Link>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[1]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[1]?.url})`,
+            backgroundImage: `url(${post.Images[1]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         ></Link>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[2]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[2]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[2]?.url})`,
+            backgroundImage: `url(${post.Images[2]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
@@ -77,37 +77,37 @@ export default function PostImages({ target }: { target: Post }) {
     );
   }
 
-  if (target.Images.length === 4) {
+  if (post.Images.length === 4) {
     return (
       <div className={cx(styles.postImageSection, styles.fourImage)}>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[0]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[0]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[0]?.url})`,
+            backgroundImage: `url(${post.Images[0]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         ></Link>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[1]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[1]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[1]?.url})`,
+            backgroundImage: `url(${post.Images[1]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         ></Link>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[2]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[2]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[2]?.url})`,
+            backgroundImage: `url(${post.Images[2]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}
         ></Link>
         <Link
-          href={`/${target.User.id}/status/${target.postId}/photo/${target.Images[3]?.imageId}`}
+          href={`/${post.User.id}/status/${post.postId}/photo/${post.Images[3]?.imageId}`}
           style={{
-            backgroundImage: `url(${target.Images[3]?.url})`,
+            backgroundImage: `url(${post.Images[3]?.link})`,
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
           }}

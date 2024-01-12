@@ -8,6 +8,15 @@ type LoginProps = {
   password: string;
 };
 
+function generateDate() {
+  const lastWeek = new Date(Date.now());
+  lastWeek.setDate(lastWeek.getDate() - 7);
+  return faker.date.between({
+    from: lastWeek,
+    to: Date.now(),
+  });
+}
+
 const mockUsers = (() => {
   return [
     {
@@ -15,12 +24,32 @@ const mockUsers = (() => {
       nickname: "hopago",
       password: "hopago",
       image: "/free-icon-letter-h-7297840.png",
+      followingUsers: [
+        {
+          userId: "2",
+        },
+      ],
+      followers: [
+        {
+          userId: "2",
+        },
+      ],
     },
     {
       id: "2",
       nickname: "dopago",
       password: "dopago",
       image: "/free-icon-letter-h-7297840.png",
+      followingUsers: [
+        {
+          userId: "1",
+        },
+      ],
+      followers: [
+        {
+          userId: "1",
+        },
+      ],
     },
   ];
 })();
@@ -39,7 +68,7 @@ const mockPosts = (() => {
           link: faker.image.urlLoremFlickr(),
         },
       ],
-      createdAt: new Date(),
+      createdAt: generateDate(),
     },
     {
       postId: 2,
@@ -53,7 +82,7 @@ const mockPosts = (() => {
           link: faker.image.urlLoremFlickr(),
         },
       ],
-      createdAt: new Date(),
+      createdAt: generateDate(),
     },
   ];
 })();
@@ -97,7 +126,9 @@ export const handlers = [
   http.post("/api/signup", async ({ request }) => {
     const bodyInfo = (await request.json()) as unknown as SignUpPropsWithoutId;
 
-    const isDuplicated = mockUsers.some((user) => user.nickname === userInfo?.nickname);
+    const isDuplicated = mockUsers.some(
+      (user) => user.nickname === userInfo?.nickname
+    );
     if (isDuplicated) {
       return new HttpResponse(null, {
         status: 407,
@@ -106,6 +137,8 @@ export const handlers = [
 
     const userInfo = {
       id: (mockUsers.length + 1).toString(),
+      followingUsers: [],
+      followers: [],
       ...bodyInfo,
     };
 
@@ -115,8 +148,36 @@ export const handlers = [
       status: 200,
     });
   }),
-  http.post("/api/post", async ({ request }) => {
-    // TODO: 파람값 가져오기
-    return HttpResponse.json(mockPosts);
-  })
+  http.get("/api/post", async ({ request }) => {
+    const { url } = request;
+    let fetchType = url.split("/")[4].split("=")[1];
+    const userId = url.split("/")[4].split("=")[2];
+
+    if (fetchType === "recommends") {
+      return HttpResponse.json(mockPosts);
+    }
+
+    if (fetchType !== "recommends") {
+      fetchType = fetchType.split("&")[0]
+    }
+
+    if (fetchType === "following") {
+      const found = mockUsers.find((user) => user.id === userId);
+      const followingUsers = found?.followingUsers;
+      if (!followingUsers || !followingUsers.length) {
+        return new HttpResponse("Post not found...", {
+          status: 404,
+        });
+      }
+
+      const followingUsersPosts = followingUsers.map((user) => {
+        const filteredPosts = mockPosts.filter(
+          (post) => post.User.id === user.userId
+        );
+        return filteredPosts;
+      });
+
+      return HttpResponse.json(followingUsersPosts);
+    }
+  }),
 ];
