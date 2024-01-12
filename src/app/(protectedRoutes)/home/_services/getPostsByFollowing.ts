@@ -7,7 +7,7 @@ export default async function getPostsByFollowing({
   userId: string;
 }) {
   const res = await restFetcher({
-    path: "api/post",
+    path: "api/posts",
     method: "GET",
     next: {
       tags: ["posts", "following"],

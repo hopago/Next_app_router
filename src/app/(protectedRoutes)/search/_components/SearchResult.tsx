@@ -32,7 +32,6 @@ export default function SearchResult({
     queryFn: getSearchResult,
     staleTime: 60 * 1000,
     gcTime: 300 * 1000,
-    enabled: !!searchParams.q
   });
 
   return data?.map((post: IPost) => <Post key={post.postId} post={post} />);

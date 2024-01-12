@@ -21,7 +21,7 @@ export const getSearchResult: QueryFunction<
   }
 
   const res = await restFetcher({
-    path: "/api/post",
+    path: "api/posts",
     method: "GET",
     next: {
       tags: ["posts", "search", searchParams.q],

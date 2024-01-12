@@ -28,7 +28,7 @@ export default function Post({
         </div>
         <div className={styles.postBody}>
           <div className={styles.postMeta}>
-            <Link href={`/${post.User.id}`}>
+            <Link href={`${post.User.id}`}>
               <span className={styles.postUserName}>
                 {post.User.nickname}
               </span>

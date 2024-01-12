@@ -87,7 +87,59 @@ const mockPosts = (() => {
   ];
 })();
 
+const mockComments = (() => {
+  return [
+    {
+      postId: 1,
+      commentId: 1,
+      User: {
+        ...mockUsers[1],
+      },
+      content: `${mockUsers[0]} is ${mockUsers[1]}???`,
+    },
+    {
+      postId: 2,
+      commentId: 2,
+      User: {
+        ...mockUsers[0],
+      },
+      content: `${mockUsers[1]} is ${mockUsers[0]}???`,
+    },
+  ];
+})();
+
+const mockTrends = (() => {
+  return [
+    {
+      tagId: 1,
+      title: "hopago",
+      count: 123,
+    },
+    {
+      tagId: 2,
+      title: "hopago",
+      count: 123,
+    },
+    {
+      tagId: 3,
+      title: "hopago",
+      count: 123,
+    },
+    {
+      tagId: 4,
+      title: "hopago",
+      count: 123,
+    },
+    {
+      tagId: 5,
+      title: "hopago",
+      count: 123,
+    },
+  ];
+})();
+
 export const handlers = [
+  // AUTH
   http.post("/api/login", async ({ request }) => {
     const bodyInfo = (await request.json()) as LoginProps;
     console.log(bodyInfo);
@@ -148,7 +200,8 @@ export const handlers = [
       status: 200,
     });
   }),
-  http.get("/api/post", async ({ request }) => {
+  // GET POSTS
+  http.get("/api/posts", async ({ request }) => {
     const url = new URL(request.url);
 
     const fetchType = url.searchParams.get("fetchType");
@@ -184,5 +237,66 @@ export const handlers = [
 
       return HttpResponse.json(filteredPosts);
     }
+  }),
+  // GET COMMENTS
+  http.get("/api/posts/:postId/comments", async ({ params }) => {
+    const { postId } = params;
+
+    const currComments = mockComments.find(
+      (comment) => comment.postId === Number(postId)
+    );
+
+    if (!currComments)
+      return new HttpResponse("Comment not found...", {
+        status: 400,
+      });
+
+    return HttpResponse.json(currComments);
+  }),
+  // GET POST
+  http.get("/api/posts/:postId", async ({ params }) => {
+    const { postId } = params;
+
+    const found = mockPosts.find(post => post.postId === Number(postId));
+    if (!found) return new HttpResponse("Post not found...", {
+      status: 400
+    });
+
+    return HttpResponse.json(found);
+  }),
+  // GET FOLLOW RECOMMEND
+  http.get("/api/users/recommend", async () => {
+    return HttpResponse.json(mockUsers.slice(0, 1));
+  }),
+  // GET USER POSTS
+  http.get("/api/users/:userId/posts", async ({ params }) => {
+    const { userId } = params;
+
+    const found = mockPosts.find((post) => post.User.id === userId);
+
+    if (!found)
+      return new HttpResponse("Post not found...", {
+        status: 400,
+      });
+
+    return HttpResponse.json(found);
+  }),
+  // GET USER
+  http.get("/api/users/:userId", async ({ params }) => {
+    const { userId } = params;
+    if (!userId) return new HttpResponse("User Id required...", {
+      status: 400
+    });
+
+    const found = mockUsers.find(user => user.id === userId);
+    if (!found) return new HttpResponse("User not found...", {
+      status: 404
+    });
+
+    return HttpResponse.json(found);
+  }),
+  // GET TRENDS
+  http.get("/api/trends", async () => {
+    return HttpResponse.json(mockTrends);
   }),
 ];
