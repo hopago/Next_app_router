@@ -9,8 +9,6 @@ export default function RightSearchForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  console.log(searchParams);
-
   const onChangeAll = () => {
     const url = `/search?${searchParams.toString()}&pf=on`;
     router.replace(url);

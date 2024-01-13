@@ -243,14 +243,15 @@ export const handlers = [
 
     if (searchTerm) {
       if (searchOptions === "f") {
-        const currentUser = mockUsers.find(user => user.id === userId);
-        if (!currentUser) return new HttpResponse("User not found...", {
-          status: 404
-        });
+        const currentUser = mockUsers.find((user) => user.id === userId);
+        if (!currentUser)
+          return new HttpResponse("User not found...", {
+            status: 404,
+          });
 
         const followingUser = [...currentUser?.followingUsers];
-        const ids = followingUser.map(user => user.userId);
-        const found = mockPosts.filter(post => {
+        const ids = followingUser.map((user) => user.userId);
+        const found = mockPosts.filter((post) => {
           return ids.includes(post.User.id);
         });
 
@@ -272,6 +273,36 @@ export const handlers = [
       });
 
       return HttpResponse.json(filteredPosts);
+    }
+
+    if (searchOptions === "pf") {
+      const sortedPosts = [...mockPosts].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      if (sortedPosts.length > 10) {
+        const slicedPosts = sortedPosts.slice(0, 10)
+        return HttpResponse.json(slicedPosts);
+      }
+
+      return HttpResponse.json(sortedPosts);
+    }
+
+    if (searchOptions === "f") {
+      const currentUser = mockUsers.find((user) => user.id === userId);
+      if (!currentUser)
+        return new HttpResponse("User not found...", {
+          status: 404,
+        });
+
+      const followingUser = [...currentUser?.followingUsers];
+      const ids = followingUser.map((user) => user.userId);
+      const found = mockPosts.filter((post) => {
+        return ids.includes(post.User.id);
+      });
+
+      return HttpResponse.json(found);
     }
   }),
   // GET COMMENTS
