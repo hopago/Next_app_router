@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import styles from "./post.module.css";
-import { Post } from "./Post";
+import { Post } from "@/model/Post";
 
 type Props = {
   post: Post;

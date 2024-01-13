@@ -12,9 +12,6 @@ export default function TrendSection() {
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  if (pathname === "/explore") return null;
-  if (pathname === "/search") return null;
-
   const { data } = useQuery<TTrend[]>({
     queryKey: ["trends"],
     queryFn: getTrends,
@@ -22,6 +19,10 @@ export default function TrendSection() {
     gcTime: 300 * 1000,
     enabled: !!session?.user,
   });
+
+  if (!session?.user) return null;
+  if (pathname === "/explore") return null;
+  if (pathname === "/search") return null;
 
   return (
     <div className={styles.trendBg}>

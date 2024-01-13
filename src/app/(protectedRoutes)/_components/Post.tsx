@@ -13,10 +13,16 @@ dayjs.locale("ko");
 
 export default function Post({
   post,
+  noImage
 }: {
   noImage?: boolean;
   post: Post;
 }) {
+  if (!post?.User) {
+    console.log(post);
+    return null;
+  }
+
   return (
     <PostArticle post={post}>
       <div className={styles.postWrapper}>
@@ -29,9 +35,7 @@ export default function Post({
         <div className={styles.postBody}>
           <div className={styles.postMeta}>
             <Link href={`${post.User.id}`}>
-              <span className={styles.postUserName}>
-                {post.User.nickname}
-              </span>
+              <span className={styles.postUserName}>{post.User.nickname}</span>
               &nbsp;
               <span className={styles.postUserId}>@{post.User.id}</span>
               &nbsp; · &nbsp;
@@ -41,9 +45,11 @@ export default function Post({
             </span>
           </div>
           <div>{post.content}</div>
-          <div className={styles.postImageSection}>
-            <PostImages post={post} />
-          </div>
+          {!noImage && (
+            <div className={styles.postImageSection}>
+              <PostImages post={post} />
+            </div>
+          )}
           <ActionButtons />
         </div>
       </div>

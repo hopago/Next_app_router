@@ -96,6 +96,13 @@ const mockComments = (() => {
         ...mockUsers[1],
       },
       content: `${mockUsers[0]} is ${mockUsers[1]}???`,
+      Images: [
+        {
+          imageId: 2,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: generateDate(),
     },
     {
       postId: 2,
@@ -103,7 +110,14 @@ const mockComments = (() => {
       User: {
         ...mockUsers[0],
       },
-      content: `${mockUsers[1]} is ${mockUsers[0]}???`,
+      content: `${mockUsers[1].nickname} is ${mockUsers[0].nickname}???`,
+      Images: [
+        {
+          imageId: 2,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: generateDate(),
     },
   ];
 })();
@@ -142,7 +156,6 @@ export const handlers = [
   // AUTH
   http.post("/api/login", async ({ request }) => {
     const bodyInfo = (await request.json()) as LoginProps;
-    console.log(bodyInfo);
 
     const { id: nickname, password: credentialsPassword } = bodyInfo;
 
@@ -242,7 +255,7 @@ export const handlers = [
   http.get("/api/posts/:postId/comments", async ({ params }) => {
     const { postId } = params;
 
-    const currComments = mockComments.find(
+    const currComments = mockComments.filter(
       (comment) => comment.postId === Number(postId)
     );
 
@@ -257,10 +270,11 @@ export const handlers = [
   http.get("/api/posts/:postId", async ({ params }) => {
     const { postId } = params;
 
-    const found = mockPosts.find(post => post.postId === Number(postId));
-    if (!found) return new HttpResponse("Post not found...", {
-      status: 400
-    });
+    const found = mockPosts.find((post) => post.postId === Number(postId));
+    if (!found)
+      return new HttpResponse("Post not found...", {
+        status: 400,
+      });
 
     return HttpResponse.json(found);
   }),
@@ -272,7 +286,7 @@ export const handlers = [
   http.get("/api/users/:userId/posts", async ({ params }) => {
     const { userId } = params;
 
-    const found = mockPosts.find((post) => post.User.id === userId);
+    const found = mockPosts.filter((post) => post.User.id === userId);
 
     if (!found)
       return new HttpResponse("Post not found...", {
@@ -284,14 +298,17 @@ export const handlers = [
   // GET USER
   http.get("/api/users/:userId", async ({ params }) => {
     const { userId } = params;
-    if (!userId) return new HttpResponse("User Id required...", {
-      status: 400
-    });
 
-    const found = mockUsers.find(user => user.id === userId);
-    if (!found) return new HttpResponse("User not found...", {
-      status: 404
-    });
+    if (!userId)
+      return new HttpResponse("User Id required...", {
+        status: 400,
+      });
+
+    const found = mockUsers.find((user) => user.id === userId);
+    if (!found)
+      return new HttpResponse("User not found...", {
+        status: 404,
+      });
 
     return HttpResponse.json(found);
   }),

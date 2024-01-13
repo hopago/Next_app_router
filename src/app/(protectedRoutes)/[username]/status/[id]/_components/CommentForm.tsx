@@ -2,29 +2,25 @@
 
 import { useRef, useState } from "react";
 import styles from "./commentForm.module.css";
+import { useSession } from "next-auth/react";
 
-export default function CommentForm() {
+export default function CommentForm({ postId }: { postId?: string }) {
   const [content, setContent] = useState("");
-
   const imageRef = useRef<HTMLInputElement>(null);
+  const { data: me } = useSession();
 
   const onClickButton = () => {};
-
   const onSubmit = () => {};
-
   const onChange = () => {};
-
-  const me = {
-    id: "hopago",
-    nickname: "호파고",
-    image: "/free-icon-letter-h-7297840.png",
-  };
 
   return (
     <form className={styles.postForm} onSubmit={onSubmit}>
       <div className={styles.postUserSection}>
         <div className={styles.postUserImage}>
-          <img src={me.image} alt={me.id} />
+          <img
+            src={me?.user?.image as string}
+            alt={me?.user?.email as string}
+          />
         </div>
       </div>
       <div className={styles.postInputSection}>

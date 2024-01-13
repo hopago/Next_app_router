@@ -54,22 +54,22 @@ export default async function layout({
           </div>
         </section>
       </header>
-      <aside className={styles.rightSectionWrapper}>
-        <div className={styles.rightSectionInner}>
-          <ReactQueryProvider>
+      <ReactQueryProvider>
+        <aside className={styles.rightSectionWrapper}>
+          <div className={styles.rightSectionInner}>
             <main className={styles.main}>{children}</main>
             <section className={styles.rightSection}>
               <RightSearchForm />
-              {session?.user && <TrendSection />}
+              <TrendSection />
               <div className={styles.followRecommend}>
                 <h3>팔로우 추천</h3>
                 <FollowRecommend />
               </div>
             </section>
-          </ReactQueryProvider>
-        </div>
-      </aside>
-      {modal}
+          </div>
+        </aside>
+        {modal}
+      </ReactQueryProvider>
     </div>
   );
 }

@@ -1,21 +1,43 @@
-import BackButton from "@/app/(protectedRoutes)/_components/BackButton";
-import styles from "./page.module.css";
-import Post from "@/app/(protectedRoutes)/_components/Post";
-import CommentForm from "./_components/CommentForm";
+"use client"
 
-export default function page() {
+import styles from './singlePost.module.css';
+import CommentForm from './_components/CommentForm';
+import Comments from './_components/Comments';
+import SinglePost from './_components/SinglePost';
+import { useParams } from 'next/navigation';
+import { HydrationBoundary, dehydrate, useQueryClient } from '@tanstack/react-query';
+import { getSinglePost } from './_services/getSinglePost';
+import { getComments } from './_services/getComments';
+import BackButton from '@/app/(protectedRoutes)/_components/BackButton';
+
+export default async function page() {
+  const { id: postId } = useParams();
+
+  const queryClient = useQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["posts", postId],
+    queryFn: () => getSinglePost({ postId: postId as string }),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["comments", postId],
+    queryFn: () => getComments({ postId: postId as string }),
+  });
+  const dehydratedState = dehydrate(queryClient);
+
   return (
-    <main className={styles.main}>
+    <div className={styles.main}>
       <div className={styles.header}>
         <BackButton />
         <h3 className={styles.headerTitle}>게시하기</h3>
       </div>
-      <Post />
-      <CommentForm />
-      <div>
-        <h3 className={styles.headerTitle}>답글</h3>
-        <Post />
-      </div>
-    </main>
+      <HydrationBoundary state={dehydratedState}>
+        <SinglePost />
+        <CommentForm />
+        <div>
+          <Comments />
+        </div>
+      </HydrationBoundary>
+    </div>
   );
 }
