@@ -219,7 +219,8 @@ export const handlers = [
 
     const fetchType = url.searchParams.get("fetchType");
     const userId = url.searchParams.get("userId");
-    const searchTerm = url.searchParams.get("search");
+    const searchTerm = url.searchParams.get("q");
+    const searchOptions = url.searchParams.get("pf") || url.searchParams.get("f");
 
     if (fetchType === "recommends") {
       return HttpResponse.json(mockPosts);
@@ -241,6 +242,28 @@ export const handlers = [
     }
 
     if (searchTerm) {
+      if (searchOptions === "f") {
+        const currentUser = mockUsers.find(user => user.id === userId);
+        if (!currentUser) return new HttpResponse("User not found...", {
+          status: 404
+        });
+
+        const followingUser = [...currentUser?.followingUsers];
+        const ids = followingUser.map(user => user.userId);
+        const found = mockPosts.filter(post => {
+          return ids.includes(post.User.id);
+        });
+
+        const posts = found.filter((post) =>
+          post.content
+            .trim()
+            .toLowerCase()
+            .includes(searchTerm.trim().toLowerCase())
+        );
+
+        return HttpResponse.json(posts);
+      }
+
       const filteredPosts = mockPosts.filter((post) => {
         return post.content
           .trim()

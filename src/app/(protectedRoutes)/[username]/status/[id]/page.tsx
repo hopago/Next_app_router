@@ -32,7 +32,7 @@ export default async function page() {
         <h3 className={styles.headerTitle}>게시하기</h3>
       </div>
       <HydrationBoundary state={dehydratedState}>
-        <SinglePost />
+        <SinglePost noImage={false} />
         <CommentForm />
         <div>
           <Comments />

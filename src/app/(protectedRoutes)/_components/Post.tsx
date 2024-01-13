@@ -18,10 +18,7 @@ export default function Post({
   noImage?: boolean;
   post: Post;
 }) {
-  if (!post?.User) {
-    console.log(post);
-    return null;
-  }
+  console.log(noImage);
 
   return (
     <PostArticle post={post}>

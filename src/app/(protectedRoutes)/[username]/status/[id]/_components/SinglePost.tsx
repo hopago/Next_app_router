@@ -46,5 +46,7 @@ export default function SinglePost({
     );
   }
 
-  return isSuccess ? <Post noImage post={post} key={post.postId} /> : null;
+  return isSuccess ? (
+    <Post noImage={noImage} post={post} key={post.postId} />
+  ) : null;
 }
