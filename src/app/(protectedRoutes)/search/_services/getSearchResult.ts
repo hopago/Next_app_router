@@ -39,8 +39,8 @@ export const getSearchResult: QueryFunction<
       next: {
         tags: ["posts", "search", ...queryValue],
       },
-      query: query.map(q => `${q}`),
-      queryValue: queryValue.map(qv => `${qv}`),
+      query: query.map((q) => `${q}`),
+      queryValue: queryValue.map((qv) => `${qv}`),
     });
   
     if (!res?.ok) {
@@ -55,14 +55,13 @@ export const getSearchResult: QueryFunction<
       return await fetchPosts({ query: ["q", "f", "userId"], queryValue: [q, f, userId]});
     }
 
+    if (f && pf && userId) {
+      return await fetchPosts({
+        query: ["q", "f", "pf", "userId"],
+        queryValue: [q, f, pf, userId],
+      });
+    }
+
     return await fetchPosts({ query: ["q"], queryValue: [q]});
-  }
-
-  if (pf) {
-    return await fetchPosts({ query: ["pf"], queryValue: [pf] });
-  }
-
-  if (f && userId) {
-    return await fetchPosts({ query: ["f", "userId"], queryValue: [f, userId] });
   }
 };

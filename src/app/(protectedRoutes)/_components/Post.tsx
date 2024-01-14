@@ -18,8 +18,6 @@ export default function Post({
   noImage?: boolean;
   post: Post;
 }) {
-  console.log(noImage);
-
   return (
     <PostArticle post={post}>
       <div className={styles.postWrapper}>

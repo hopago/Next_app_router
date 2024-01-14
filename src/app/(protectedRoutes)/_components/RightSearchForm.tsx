@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react";
 import SearchForm from "./SearchForm";
 import styles from "./rightSearchForm.module.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -9,17 +10,17 @@ export default function RightSearchForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const onChangeAll = () => {
-    const url = `/search?${searchParams.toString()}&pf=on`;
-    router.replace(url);
-  };
-
   const onChangeFollow = () => {
-    let url = `/search?q=${searchParams.get("q")}`;
-    if (searchParams.get("f")) {
-      url += `&f=${searchParams.get("f")}`;
-    }
-  };
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('pf', 'on');
+    router.replace(`/search?${newSearchParams.toString()}`);
+  }
+  
+  const onChangeAll = () => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete('pf');
+    router.replace(`/search?${newSearchParams.toString()}`);
+  }
 
   if (pathname === "/explore") return null;
   if (pathname === "/search") {
@@ -34,7 +35,6 @@ export default function RightSearchForm() {
               <input
                 type="radio"
                 name="pf"
-                value="pf"
                 defaultChecked
                 onChange={onChangeAll}
               />
@@ -43,8 +43,8 @@ export default function RightSearchForm() {
               <div>내가 팔로우하는 사람들</div>
               <input
                 type="radio"
-                name="f"
-                value="f"
+                name="pf"
+                value="on"
                 onChange={onChangeFollow}
               />
             </div>
