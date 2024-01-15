@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { restFetcher } from "./hooks/fetcher";
+import { cookies } from "next/dist/client/components/headers";
+import cookie from "cookie";
 
 export const {
   handlers: { GET, POST },
@@ -18,30 +19,43 @@ export const {
         password: { type: "password" },
       },
       async authorize(credentials) {
-        const authResponse = await restFetcher({
-          path: "api/login",
-          method: "POST",
-          body: {
-            id: credentials?.username,
-            password: credentials?.password,
-          },
-        });
+        try {
+          const authResponse = await fetch(
+            `${process.env.AUTH_URL}/api/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: credentials.username,
+                password: credentials.password,
+              }),
+            }
+          );
 
-        if (!authResponse?.ok) {
-          return null;
+          let setCookie = authResponse.headers.get("Set-Cookie");
+          console.log("set-cookie", setCookie);
+
+          if (setCookie) {
+            const parsed = cookie.parse(setCookie);
+            cookies().set("connect.sid", parsed["connect.sid"], parsed);
+          }
+
+          if (!authResponse.ok) {
+            return null;
+          }
+
+          const user = await authResponse.json();
+          return {
+            email: user.id,
+            name: user.nickname,
+            image: user.image,
+            ...user,
+          };
+        } catch (err) {
+          console.log(err);
         }
-
-        if (authResponse.status === 401) {
-          throw new Error("Wrong credentials...");
-        }
-
-        const user = await authResponse.json();
-        return {
-          email: user.id,
-          name: user.nickname,
-          image: user.image,
-          ...user,
-        };
       },
     }),
   ],

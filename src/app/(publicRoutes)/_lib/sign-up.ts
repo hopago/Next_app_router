@@ -1,96 +1,59 @@
 "use server";
 
-import { signIn } from "@/auth";
-import { restFetcher } from "@/hooks/fetcher";
 import { redirect } from "next/navigation";
+import { signIn } from "@/auth";
 
-export type SignUpProps = {
-  id: string;
-  nickname: string;
-  password: string;
-  image: string;
-};
+export default async function signUp(prevState: any, formData: FormData) {
+  if (!formData.get("id") || !(formData.get("id") as string)?.trim()) {
+    return { message: "no_id" };
+  }
+  if (!formData.get("name") || !(formData.get("name") as string)?.trim()) {
+    return { message: "no_name" };
+  }
+  if (
+    !formData.get("password") ||
+    !(formData.get("password") as string)?.trim()
+  ) {
+    return { message: "no_password" };
+  }
+  if (!formData.get("image")) {
+    return { message: "no_image" };
+  }
+  formData.set("nickname", formData.get("name") as string);
 
-export async function signUp(prevState: any, formData: FormData) {
   let shouldRedirect = false;
 
-  let id;
-  let name;
-  let password;
-  let image;
+  try {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users`,
+        {
+          method: "post",
+          body: formData,
+          credentials: "include",
+        }
+      );
 
-  const checkAndTrim = (field: string) => {
-    const value = formData.get(field);
-    if (typeof value === "string") {
-      const trimmedValue = value.trim();
-      if (!trimmedValue) {
-        throw new Error(`Field ${field} is required.|${field}`);
+      if (response.status === 403) {
+        return { message: "user_exists" };
       }
-      return trimmedValue;
-    } else {
-      throw new Error(`Field ${field} should be a string.|${field}`);
-    }
-  };
-
-  try {
-    id = checkAndTrim("id");
-    name = checkAndTrim("name");
-    password = checkAndTrim("password");
-    image = checkAndTrim("image");
-  } catch (err: any) {
-    return {
-      message: err.message,
-    }
-  }
-
-  const signUpInfo = {
-    id,
-    nickname: name,
-    password,
-    image,
-  };
-
-  try {
-    const response = await restFetcher({
-      method: "POST",
-      path: "api/signup",
-      body: {
-        ...signUpInfo,
-      },
-    });
-
-    if (!response) {
-      return {
-        message: "Internal server error...",
-        status: 500,
-      };
+    } catch (err) {
+      console.log(err);
     }
 
-    if (response.status === 407) {
-      return {
-        message: "User already existed...",
-      };
-    }
-
-    if (response.status === 200) {
-      shouldRedirect = true;
-    }
-  } catch (err: any) {
-    console.error(err);
-  }
-
-  try {
+    shouldRedirect = true;
     await signIn("credentials", {
-      username: name,
-      password,
+      username: formData.get("id"),
+      password: formData.get("password"),
       redirect: false,
     });
-  } catch (err: any) {
-    shouldRedirect = false;
+  } catch (err) {
     console.error(err);
+    return { message: null };
   }
 
   if (shouldRedirect) {
     redirect("/home");
   }
+  return { message: null };
 }

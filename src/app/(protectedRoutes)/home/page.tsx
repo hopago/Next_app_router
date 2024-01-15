@@ -9,6 +9,9 @@ import TabContextProvider from "./context/TabContextProvider";
 import styles from "./page.module.css";
 import getPostsByRecommend from "./_services/getPostsByRecommend";
 import TabDecider from "./_components/TabDecider";
+import { Suspense } from "react";
+import Loading from "./loading";
+import { auth } from "@/auth";
 
 export default async function Home() {
   const queryClient = new QueryClient();
@@ -19,15 +22,19 @@ export default async function Home() {
   });
   const dehydratedState = dehydrate(queryClient);
 
+  const session = await auth();
+
   return (
     <div className={styles.main}>
-      <HydrationBoundary state={dehydratedState}>
-        <TabContextProvider>
-          <Tab />
-          <PostForm />
-          <TabDecider />
-        </TabContextProvider>
-      </HydrationBoundary>
+      <TabContextProvider>
+        <Tab />
+        <PostForm me={session} />
+        <Suspense fallback={<Loading />}>
+          <HydrationBoundary state={dehydratedState}>
+            <TabDecider />
+          </HydrationBoundary>
+        </Suspense>
+      </TabContextProvider>
     </div>
   );
 }

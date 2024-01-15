@@ -48,7 +48,7 @@ export default async function layout({
                     </svg>
                   </Link>
                 </nav>
-                <LogoutButton />
+                <LogoutButton me={session} />
               </>
             )}
           </div>

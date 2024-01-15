@@ -8,17 +8,16 @@ import {
   useState,
 } from "react";
 import styles from './postForm.module.css';
+import { Session } from "next-auth";
 
-export default function PostForm() {
+type Props = {
+  me: Session | null;
+};
+
+export default function PostForm({ me }: Props) {
   const imageRef = useRef<HTMLInputElement>(null);
-  
-  const [content, setContent] = useState<string>("");
 
-  const me = {
-    id: "hopago",
-    nickname: "호파고",
-    image: "/free-icon-letter-h-7297840.png",
-  };
+  const [content, setContent] = useState<string>("");
 
   const onClickButton = () => {
     imageRef.current?.click();
@@ -36,7 +35,7 @@ export default function PostForm() {
     <form className={styles.postForm} onSubmit={onSubmit}>
       <div className={styles.postUserSection}>
         <div className={styles.postUserImage}>
-          <img src={me.image} alt={me.id} />
+          <img src={me?.user?.image!} alt={me?.user?.email!} />
         </div>
       </div>
       <div className={styles.postInputSection}>

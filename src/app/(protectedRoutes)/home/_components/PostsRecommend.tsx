@@ -1,6 +1,6 @@
 "use client";
 
-import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import { InfiniteData, useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import getPostsByRecommend from "../_services/getPostsByRecommend";
 import Post from "../../_components/Post";
 import { Post as TPost } from "@/model/Post";
@@ -17,7 +17,7 @@ export default function PostsRecommend() {
     isPending,
     isError,
     error
-  } = useInfiniteQuery<
+  } = useSuspenseInfiniteQuery<
     TPost[],
     Object,
     InfiniteData<TPost[]>,

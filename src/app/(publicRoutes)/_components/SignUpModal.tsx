@@ -1,21 +1,28 @@
-"use client"
+"use client";
 
 import styles from "./signup.module.css";
 import BackButton from "./BackButton";
-import { signUp } from "../_lib/sign-up";
+import signUp from "../_lib/sign-up";
 import { useFormState, useFormStatus } from "react-dom";
 
-function handleMessage(message: string | undefined, field: string) {
-  if (!message) return;
-  if (message === `Field ${field} is required.`) {
-    return "모든 영역을 입력하세요.";
+function showMessage(message: string | null) {
+  console.log("message", message);
+  if (message === "no_id") {
+    return "아이디를 입력하세요.";
   }
-  if (message === "User already existed...") {
+  if (message === "no_name") {
+    return "닉네임을 입력하세요.";
+  }
+  if (message === "no_password") {
+    return "비밀번호를 입력하세요.";
+  }
+  if (message === "no_image") {
+    return "이미지를 업로드하세요.";
+  }
+  if (message === "user_exists") {
     return "이미 사용 중인 아이디입니다.";
   }
-  if (message === "Internal server error...") {
-    return "서버 에러입니다. 다시 시도해주세요."
-  }
+  return "";
 }
 
 export default function SignUpModal() {
@@ -94,10 +101,7 @@ export default function SignUpModal() {
                 가입하기
               </button>
               <div className={styles.error}>
-                {handleMessage(
-                  state?.message.split("|")[0],
-                  state?.message.split("|")[1]
-                )}
+                <div className={styles.error}>{showMessage(state?.message)}</div>
               </div>
             </div>
           </form>
