@@ -9,11 +9,13 @@ import { Post as TPost } from "@/model/Post";
 import { getPostsByUserId } from "./_services/getPostsByUserId";
 import { useParams } from "next/navigation";
 import BackButton from "../_components/BackButton";
+import { useSession } from "next-auth/react";
 
 export default function page() {
   const params = useParams();
-
   const { username: userId } = params; 
+
+  const { data: session } = useSession();
 
   const {
     data: user,
@@ -52,7 +54,9 @@ export default function page() {
               <div>{user?.nickname}</div>
               <div>@{user?.id}</div>
             </div>
-            <button className={styles.followButton}>팔로우</button>
+            {session?.user?.email !== userId && (
+              <button className={styles.followButton}>팔로우</button>
+            )}
           </>
         )}
         {isError && error?.message === "User not found..." && (

@@ -1,4 +1,5 @@
 import { SignUpProps } from "@/app/(publicRoutes)/_lib/sign-up";
+import { Post } from "@/model/Post";
 import { faker } from "@faker-js/faker";
 import { HttpResponse, http } from "msw";
 
@@ -6,6 +7,27 @@ type SignUpPropsWithoutId = Omit<SignUpProps, "id">;
 type LoginProps = {
   id: string;
   password: string;
+};
+type MockPost = {
+  postId: number;
+  User: {
+    id: string;
+    nickname: string;
+    password: string;
+    image: string;
+    followingUsers: {
+      userId: string;
+    }[];
+    followers: {
+      userId: string;
+    };
+  };
+  content: string;
+  Images: {
+    imageId: number;
+    link: string;
+  }[];
+  createdAt: Date;
 };
 
 function generateDate() {
@@ -72,6 +94,48 @@ const mockPosts = (() => {
     },
     {
       postId: 2,
+      User: {
+        ...mockUsers[1],
+      },
+      content: `${mockUsers[1].nickname} is ${mockUsers[1].nickname}!!!`,
+      Images: [
+        {
+          imageId: 2,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: generateDate(),
+    },
+    {
+      postId: 3,
+      User: {
+        ...mockUsers[1],
+      },
+      content: `${mockUsers[1].nickname} is ${mockUsers[1].nickname}!!!`,
+      Images: [
+        {
+          imageId: 2,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: generateDate(),
+    },
+    {
+      postId: 4,
+      User: {
+        ...mockUsers[1],
+      },
+      content: `${mockUsers[1].nickname} is ${mockUsers[1].nickname}!!!`,
+      Images: [
+        {
+          imageId: 2,
+          link: faker.image.urlLoremFlickr(),
+        },
+      ],
+      createdAt: generateDate(),
+    },
+    {
+      postId: 5,
       User: {
         ...mockUsers[1],
       },
@@ -222,9 +286,45 @@ export const handlers = [
     const searchTerm = url.searchParams.get("q");
     const f = url.searchParams.get("f");
     const pf = url.searchParams.get("pf");
+    const cursor = Number(url.searchParams.get("cursor")) || 0;
+    const pageNumber = 5;
 
     if (fetchType === "recommends") {
-      return HttpResponse.json(mockPosts);
+      // const isNextPage = mockPosts.length > cursor + pageNumber;
+
+      // if (!isNextPage) {
+      //   const lastPageNumber = mockPosts.length - 1;
+      //   if (lastPageNumber === cursor)
+      //     return new HttpResponse("Post not found...", {
+      //       status: 400,
+      //     });
+
+      //   const slicedPosts = mockPosts.slice(cursor, lastPageNumber + 1);
+
+      //   return HttpResponse.json(slicedPosts);
+      // }
+
+      if (cursor === 0) {
+        return HttpResponse.json(mockPosts);
+      }
+
+      const temporaryPosts: MockPost[] = [
+        ...Array(cursor)
+          .fill(0)
+          .reduce((acc: Post[], item: number, index: number) => {
+            return [...acc, { ...mockPosts[index % mockPosts.length] }];
+          }, []),
+      ];
+
+      temporaryPosts.forEach((post, index) => {
+        post.postId = cursor + (index + 1);
+        post.Images[0].imageId = cursor + (index + 1);
+      });
+
+      const posts = [...mockPosts, ...temporaryPosts];
+      const slicedPosts = posts.slice(cursor, cursor + pageNumber);
+
+      return HttpResponse.json(slicedPosts);
     }
 
     if (fetchType === "following" && userId) {
@@ -244,7 +344,14 @@ export const handlers = [
 
     if (searchTerm) {
       if (f) {
-        const sortedPosts = mockPosts.sort(
+        const filteredPosts = mockPosts.filter((post) =>
+          post.content
+            .trim()
+            .toLowerCase()
+            .includes(searchTerm.trim().toLowerCase())
+        );
+
+        const sortedPosts = filteredPosts.sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );

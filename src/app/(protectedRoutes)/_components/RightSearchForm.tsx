@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react";
 import SearchForm from "./SearchForm";
 import styles from "./rightSearchForm.module.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -15,7 +14,7 @@ export default function RightSearchForm() {
     newSearchParams.set('pf', 'on');
     router.replace(`/search?${newSearchParams.toString()}`);
   }
-  
+
   const onChangeAll = () => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.delete('pf');
